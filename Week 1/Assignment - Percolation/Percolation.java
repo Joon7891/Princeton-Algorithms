@@ -9,14 +9,14 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
 	
 	// Data pertaining to the open/blocked states of the sites.
-	private int n;
+	private final int n;
 	private boolean[][] open;
 	private int openCount = 0;
 	
 	// Union data to determine Percolation.
-	private WeightedQuickUnionUF unionSet;
-	private int topIndex;
-	private int bottomIndex;
+	private final WeightedQuickUnionUF unionSet;
+	private final int topIndex;
+	private final int bottomIndex;
 	
 	/**
 	 * Creates an n-by-n Percolation system, with all sites initially blocked.
@@ -95,7 +95,7 @@ public class Percolation {
 			throw new IllegalArgumentException();
     	}
     	
-    	return open[row][col];
+    	return open[row - 1][col - 1];
     }
 
     /**

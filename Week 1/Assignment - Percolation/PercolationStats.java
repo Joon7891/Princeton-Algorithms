@@ -1,6 +1,5 @@
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
-import java.util.ArrayList;
 
 /**
  * PercolationStats object to hold various data for {@link Percolation} simulations.
@@ -9,28 +8,29 @@ import java.util.ArrayList;
  * @since April 8, 2020
  */
 public class PercolationStats {
-	private double[] trialData;
-	private double mean, stdv, confLow, confHigh;
+	private final double mean, stdv, confLow, confHigh;
 	
 	public PercolationStats(int n, int trials) {
 		// Setting up array to hold trial data.
-		trialData = new double[trials];
+		double[] trialData = new double[trials];
 		
 		// Running trials
 		for (int i = 0; i < trials; i++) {
-			// Initializing a counter, list of unused sites, and a Percolation.
-			double globalCount = 0;
-			ArrayList<Integer> toUse = new ArrayList<Integer>();
+			// Initializing a counter and a Percolation.
+			double globalCount = 0;			
 			Percolation curPerc = new Percolation(n);
-			for (int j = 0; j < n * n; j++) toUse.add(j);
 			
 			// Opening sites as long as the system does not percolate.
 			while (!curPerc.percolates()) {
 				globalCount++;
-				int newIndex = StdRandom.uniform(0, toUse.size());
-				int location = toUse.get(newIndex); toUse.remove(newIndex);
-				int row = location / n + 1;
-				int col = location % n + 1;
+				
+				int row = StdRandom.uniform(1, n + 1);
+				int col = StdRandom.uniform(1, n + 1);
+				if (curPerc.isOpen(row, col)) {
+					globalCount--;
+					continue;
+				}
+				
 				curPerc.open(row, col);
 			}
 
@@ -55,27 +55,48 @@ public class PercolationStats {
     }
 
     // sample standard deviation of percolation threshold
+    /**
+     * Gets the standard deviation of the percolation threshold.
+     * 
+     * @return The standard deviation of the percolation threshold.
+     */
     public double stddev() {
     	return stdv;
     }
 
-    // low endpoint of 95% confidence interval
+    /**
+     * Gets the low end point of the 95% confidence interval.
+     * 
+     * @return The low end point of the 95% confidence interval.
+     */
     public double confidenceLo() {
     	return confLow;
     }
-
-    // high endpoint of 95% confidence interval
+    
+    /**
+     * Gets the high end point of the 95% confidence interval.
+     * 
+     * @return The high end point of the 95% confidence interval.
+     */
     public double confidenceHi() {
     	return confHigh;
     }
 
-	
+	/**
+	 * Main driver method for program.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		// Handling command line arguments
+		// Handling command line arguments.
 		int n = Integer.parseInt(args[0]);
-		int T = Integer.parseInt(args[1]);
+		int t = Integer.parseInt(args[1]);
 		
-		PercolationStats ps = new PercolationStats(n, T);
+		// Throwing an exception if argument is out of bounds.
+		if (n <= 0 || t <= 0) throw new IllegalArgumentException();
+		
+		// Simulating percolation and printing statistics.
+		PercolationStats ps = new PercolationStats(n, t);
 		System.out.println("mean                    = " + ps.mean());
 		System.out.println("stddev                  = " + ps.stddev());
 		System.out.println("95% confidence interval = [" + ps.confidenceLo() + ", " + ps.confidenceHi() + "]");
