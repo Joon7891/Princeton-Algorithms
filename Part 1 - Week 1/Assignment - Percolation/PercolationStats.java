@@ -50,37 +50,36 @@ public class PercolationStats {
 	 * 
 	 * @return The mean of the percolation threshold.
 	 */
-    public double mean() {
-    	return mean;
-    }
+	public double mean() {
+		return mean;
+	}
 
-    // sample standard deviation of percolation threshold
     /**
      * Gets the standard deviation of the percolation threshold.
      * 
      * @return The standard deviation of the percolation threshold.
      */
-    public double stddev() {
-    	return stdv;
-    }
+	public double stddev() {
+		return stdv;
+	}
 
     /**
      * Gets the low end point of the 95% confidence interval.
      * 
      * @return The low end point of the 95% confidence interval.
      */
-    public double confidenceLo() {
-    	return confLow;
-    }
+	public double confidenceLo() {
+		return confLow;
+	}
     
     /**
      * Gets the high end point of the 95% confidence interval.
      * 
      * @return The high end point of the 95% confidence interval.
      */
-    public double confidenceHi() {
-    	return confHigh;
-    }
+	public double confidenceHi() {
+		return confHigh;
+	}
 
 	/**
 	 * Main driver method for program.

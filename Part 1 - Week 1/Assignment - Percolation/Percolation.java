@@ -90,13 +90,13 @@ public class Percolation {
 	 * @param col The column (x) coordinate.
 	 * @return Whether the site (row, col) is open
 	 */
-    public boolean isOpen(int row, int col) {
-    	if (row > n || row < 1 || col > n || col < 1) {
+	public boolean isOpen(int row, int col) {
+		if (row > n || row < 1 || col > n || col < 1) {
 			throw new IllegalArgumentException();
-    	}
-    	
-    	return open[row - 1][col - 1];
-    }
+		}
+		
+		return open[row - 1][col - 1];
+	}
 
     /**
      * Determines whether the site (row, col) is full.
@@ -105,23 +105,23 @@ public class Percolation {
 	 * @param col The column (x) coordinate.
 	 * @return Whether the site (row, col) is full.
      */
-    public boolean isFull(int row, int col) {
-    	if (row > n || row < 1 || col > n || col < 1) {
+	public boolean isFull(int row, int col) {
+		if (row > n || row < 1 || col > n || col < 1) {
 			throw new IllegalArgumentException();
-    	}
+		}
     	
-    	int adjustedIndex = (row - 1) * n + col - 1;
-    	return unionSet.find(adjustedIndex) == unionSet.find(topIndex);
-    }
+		int adjustedIndex = (row - 1) * n + col - 1;
+		return unionSet.find(adjustedIndex) == unionSet.find(topIndex);
+	}
 
     /**
      * Determines the number of open sites in this Percolation.
      * 
      * @return The number of open sites in this Percolation.
      */
-    public int numberOfOpenSites() {
-    	return openCount;
-    }
+	public int numberOfOpenSites() {
+		return openCount;
+	}
 
 
     /**
@@ -129,7 +129,7 @@ public class Percolation {
      * 
      * @return Whether the system percolates.
      */
-    public boolean percolates() {
-    	return unionSet.find(topIndex) == unionSet.find(bottomIndex);
-    }
+	public boolean percolates() {
+		return unionSet.find(topIndex) == unionSet.find(bottomIndex);
+	}
 }
