@@ -3,8 +3,8 @@
 Assignments and Notes for Princeton University's Online Algorithms 1 and 2 Courses
 
 #### Part 1
-- 1.1 - Union-Find
-    - Assignment: Percolation
+- [1.1 - Union-Find](https://github.com/Joon7891/Princeton-Algorithms/tree/master/Part%201%20-%20Week%201/Union-Find)
+    - [Assignment: Percolation](https://github.com/Joon7891/Princeton-Algorithms/tree/master/Part%201%20-%20Week%201/Assignment%20-%20Percolation)
 - 1.2 - Analysis of Algorithms
 - 2.1 - Stacks and Queues
     - Assignment: Deques and Randomized Queues
