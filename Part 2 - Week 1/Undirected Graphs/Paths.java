@@ -20,9 +20,7 @@ public class Paths {
 	public Paths(Graph G, int s) {
 		marked = new boolean[G.V()];
 		edgeTo = new int[G.V()];
-		this.s = s;
-		
-		for (int i = 0; i < G.V(); i++) marked[i] = false;		
+		this.s = s;		
 	}
 	
 	/**
@@ -49,7 +47,7 @@ public class Paths {
 			path.add(0, x);
 		}
 		
-		path.add(s, 0);
+		path.add(0, s);
 		return path;
 	}
 }

@@ -17,9 +17,15 @@ public class Graph {
 	 * 
 	 * @param V The number of vertices in the {@link Graph}.
 	 */
+	@SuppressWarnings("unchecked")
 	public Graph(int V) {
 		this.V = V;
 		E = 0;
+		
+		adj = new ArrayList[V];		
+		for (int i = 0; i < V; i++) {
+			adj[i] = new ArrayList<Integer>();
+		}
 	}
 	
 	/**
@@ -32,7 +38,7 @@ public class Graph {
 		V = in.readInt();
 		E = in.readInt();
 		
-		adj = (ArrayList<Integer>[]) new Object[V];		
+		adj = new ArrayList[V];		
 		for (int i = 0; i < V; i++) {
 			adj[i] = new ArrayList<Integer>();
 		}
