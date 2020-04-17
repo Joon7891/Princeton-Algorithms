@@ -1,15 +1,15 @@
 import java.util.ArrayList;
 
 /**
- * Implementation of a graph with basic functionality.
+ * Implementation of an undirected graph with basic functionality.
  * 
  * @author Joon Song
  * @since April 16, 2020
  */
 public class Graph {
 	
-	private ArrayList<Integer> adj[];
-	private int V;
+	private ArrayList<Integer>[] adj;
+	private final int V;
 	private int E;
 	
 	/**

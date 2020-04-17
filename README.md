@@ -22,7 +22,7 @@ Assignments and Notes for Princeton University's Online Algorithms 1 and 2 Cours
 - 6.2 - Symbol Table Applications
 
 #### Part 2
-- 1.1 - Undirected Graphs
+- [1.1 - Undirected Graphs](https://github.com/Joon7891/Princeton-Algorithms/tree/master/Part%202%20-%20Week%201/Undirected%20Graphs)
 - 1.2 - Directed Graphs
     - Assignment: WordNet
 - 2.1 - Minimum Spanning Trees
