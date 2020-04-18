@@ -1,5 +1,5 @@
 /**
- * Wrapper class to hold connected components functions for a {@link Graph}.
+ * Wrapper class to compute and hold connected components functions for a {@link Graph}.
  * 
  * @author Joon Song
  * @since April 16, 2020

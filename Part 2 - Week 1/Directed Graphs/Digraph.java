@@ -58,7 +58,7 @@ public class Digraph {
 	 */
 	public void addEdge(int v, int w) {
 		E++;
-		adj[v].add(v);
+		adj[v].add(w);
 	}
 	
 	/**
@@ -69,6 +69,19 @@ public class Digraph {
 	 */
 	public ArrayList<Integer> adj(int v){
 		return adj[v];
+	}
+	
+	/**
+	 * Reverses the direction of all edges in this {@link Digraph}.
+	 */
+	public Digraph reverse() {
+		Digraph reverseDigraph = new Digraph(V);
+		
+		for (int i = 0; i < V; i++) {
+			for (int next : adj[i]) reverseDigraph.addEdge(next, i);
+		}
+		
+		return reverseDigraph;
 	}
 	
 	/**
