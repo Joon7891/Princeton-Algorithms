@@ -1,7 +1,8 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.DirectedCycle;
+
 /**
  * Implementation of a noun-only WordNet.
  * 
@@ -10,9 +11,10 @@ import edu.princeton.cs.algs4.Digraph;
  */
 public class WordNet {
 
-	private Digraph wordNetGraph;
-	private Bag<String> allNouns;
-	private ArrayList<Bag<String>> nounsList;
+	private final SAP sap;
+	private final Digraph digraph;
+	private final HashMap<String, Integer> nounToIndex;
+	private final HashMap<Integer, String> indexToSynset;
 	
 	/**
 	 * Constructor for {@link WordNet} object.
@@ -20,43 +22,63 @@ public class WordNet {
 	 * @param synsets The file name of the synsets file.
 	 * @param hypernyms The file name of the hypernyms file.
 	 * 
-	 * @throws IllegalArgumentException if synsets or hypernyms is {@link null}.
+	 * @throws IllegalArgumentException if synsets or hypernyms is {@link null}, or if the digraph is not a rooted DAG.
 	 */
 	public WordNet(String synsets, String hypernyms) {
 		// Throwing exception of one of the input fields is invalid.
 		if (synsets == null) throw new IllegalArgumentException("Parameter sysnets is null.");
 		else if (hypernyms == null) throw new IllegalArgumentException("Parameter hypernyms is null.");
 		
-		String[] sysnetsLines = (new In(synsets)).readAllLines();
-		String[] hypernymsLines = (new In(hypernyms)).readAllLines();
+		In synsetsIn = new In(synsets);
+		In hypernymsIn = new In(hypernyms);
 		
 		// Setting up nouns.
-		allNouns = new Bag<String>();
-		nounsList = new ArrayList<Bag<String>>();
-		for (String sysnet : sysnetsLines) {
-			String[] nouns = sysnet.split(",")[1].split(" ");
+		int size = 0;
+		nounToIndex = new HashMap<String, Integer>();
+		indexToSynset = new HashMap<Integer, String>();
+		while (synsetsIn.hasNextLine()) {
+			String[] line = synsetsIn.readLine().split(",");
 			
-			Bag<String> nounBag = new Bag<String>();
-			for (String noun : nouns) {
-				nounBag.add(noun);
-				allNouns.add(noun);
+			if (line.length < 2) break;
+
+			size++;
+			int index = Integer.parseInt(line[0]);
+			indexToSynset.put(index, line[1]);
+			String[] words = line[1].split(" ");
+			for (String word : words) {
+				nounToIndex.put(word, index);
 			}
-			
-			nounsList.add(nounBag);
 		}
 		
-		// Setting up WordNet hypernym directed edges.
-		wordNetGraph = new Digraph(nounsList.size());
-		for (String hypernym : hypernymsLines) {
-			String[] splitLine = hypernym.split(",");
+		// Setting up digraph.
+		digraph = new Digraph(size);
+		while (hypernymsIn.hasNextLine()) {
+			String[] line = hypernymsIn.readLine().split(",");
 			
-			int tailNounIndex = Integer.parseInt(splitLine[0]);
-			for (int i = 1; i < splitLine.length; i++) {
-				wordNetGraph.addEdge(tailNounIndex, Integer.parseInt(splitLine[i]));
+			if (line.length < 2) continue;
+			
+			int index = Integer.parseInt(line[0]);
+			for (int i = 1; i < line.length; i++) {
+				digraph.addEdge(index, Integer.parseInt(line[i]));
 			}
 		}
+		
+		sap = new SAP(digraph);
 		
 		// Check if it is an rooted DAG.
+		int roots = 0;
+		for (int i = 0; i < size; i++) {
+			if (!digraph.adj(i).iterator().hasNext()) roots++;
+		}
+		
+		if (roots != 1) {
+			throw new IllegalArgumentException("Hypernym digraph does not have exactly 1 root.");
+		}
+		
+		DirectedCycle dicycle = new DirectedCycle(digraph);
+		if (dicycle.hasCycle()) {
+			throw new IllegalArgumentException("Hypernym digraph is not acyclical.");
+		}
 	}
 	
 	/**
@@ -65,7 +87,7 @@ public class WordNet {
 	 * @return An {@link Iterable} containing the nouns in this {@link WordNet}.
 	 */
 	public Iterable<String> nouns(){
-		return allNouns;
+		return nounToIndex.keySet();
 	}
 
 	/**
@@ -78,12 +100,7 @@ public class WordNet {
 	 */
 	public boolean isNoun(String word) {
 		if (word == null) throw new IllegalArgumentException("Parameter word is null.");
-				
-		for (String noun : allNouns) {
-			if (word.equals(noun)) return true;
-		}
-		
-		return false;
+		return nounToIndex.containsKey(word);
 	}
 	
 	/**
@@ -98,19 +115,28 @@ public class WordNet {
 	public int distance(String nounA, String nounB) {
 		if (!isNoun(nounA)) throw new IllegalArgumentException("Parameter nounA is not a noun.");
 		if (!isNoun(nounB)) throw new IllegalArgumentException("Parameter nounB is not a noun.");
+		
+		int indexA = nounToIndex.get(nounA);
+		int indexB = nounToIndex.get(nounB);
+		return sap.length(indexA, indexB);
 	}
 	
-	
-	
-	
-   // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
-   // in a shortest ancestral path (defined below)
-   public String sap(String nounA, String nounB) {
-	   
-   }
-
-   // do unit testing of this class
-   public static void main(String[] args) {
-	   
-   }
+	/**
+	 * Determines a synset that is the common ancestor in a shortest ancestral path of nounA and nounB.
+	 * 
+	 * @param nounA The noun to determine the ancestor in the shortest acestreal path from.
+	 * @param nounB The noun to determine the ancestor in the shortest acestreal path from.
+	 * @return A synset that is the common ancestor in a shortest ancestral path of nounA and nounB.
+	 * 
+	 * @throws IllegalArgumentException if nounA or nounB is not a noun.
+	 */
+	public String sap(String nounA, String nounB) {
+		if (!isNoun(nounA)) throw new IllegalArgumentException("Parameter nounA is not a noun.");
+		if (!isNoun(nounB)) throw new IllegalArgumentException("Parameter nounB is not a noun.");
+		
+		int indexA = nounToIndex.get(nounA);
+		int indexB = nounToIndex.get(nounB);
+		int ancestorIndex = sap.ancestor(indexA, indexB);
+		return indexToSynset.get(ancestorIndex);
+	}
 }
